@@ -1,0 +1,108 @@
+{
+    "cells": [
+        {
+            "language": "typescript",
+            "source": [
+                "var array = Array.from(new Array(100)).map((_, i) => i);\r\nconsole.log(array.slice(0, 25).join(\",\"));"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "var newarray = Array.from(new Array(array.length / 2 | 0));"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "function DetermineRange(originalArray, indexToSample, valuesToSample) {\r\n\tlet arrMax = originalArray.length - 1;\r\n\r\n\tlet half = Math.floor(valuesToSample / 2);\r\n\tlet otherHalf = Math.ceil(valuesToSample / 2);\r\n\r\n\t// in case we are only sampling 1 element\r\n\tif (half === 0) return [indexToSample];\r\n\r\n\t// we would go over the lower bounds of the Array. Sample from 0\r\n\tif (indexToSample - half < 0)\r\n\t\treturn Array.from(new Array(valuesToSample)).map((v, i) => i);\r\n\r\n\t// we would go over the upper bounds of the array. sample from arrMax\r\n\tif (indexToSample + otherHalf > arrMax)\r\n\t\treturn Array.from(new Array(valuesToSample)).map((v, i) => arrMax - i);\r\n\r\n\tlet beginIndex = indexToSample - half;\r\n\treturn Array.from(new Array(valuesToSample)).map((v, i) => beginIndex + i);\r\n}\r\n"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "function DetermineSampleIndex(currentIndex, currentSize, originalSize){\r\n\tlet halfSampleSize = originalSize / 2;\r\n\treturn currentIndex + ((currentIndex / currentSize) * halfSampleSize);\r\n}\r\n\r\nconsole.log(newarray.map((v, i) => DetermineSampleIndex(i, newarray.length, array.length)));"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "[",
+                                "   0,  2,  4,  6,  8, 10, 12, 14, 16, 18, 20,",
+                                "  22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42,",
+                                "  44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64,",
+                                "  66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86,",
+                                "  88, 90, 92, 94, 96, 98",
+                                "]",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "language": "typescript",
+            "source": [
+                "for(let i = 0; i < newarray.length; ++i){\r\n\tlet indexToSample = DetermineSampleIndex(i, newarray.length, array.length);\r\n\r\n\tlet valuesToSample = (Math.log(i) | 0) || 1; // we floor the count but at least sample one \r\n\r\n\tlet totalValue = 0;\r\n\tfor(let finalIndex of DetermineRange(array, indexToSample, valuesToSample))\r\n\t\ttotalValue += array[finalIndex];\r\n\t\r\n\ttotalValue /= valuesToSample;\r\n\r\n\tnewarray[i] = totalValue;\r\n}\r\n\r\nconsole.log(newarray.join(\",\"))"
+            ],
+            "outputs": [
+                {
+                    "items": [
+                        {
+                            "mime": "application/vnd.code.notebook.stdout",
+                            "value": [
+                                "0,2,4,6,8,10,12,14,15.5,17.5,19.5,21.5,23.5,25.5,27.5,29.5,31.5,33.5,35.5,37.5,39.5,42,44,46,48,50,52,54,56,58,60,62,64,66,68,70,72,74,76,78,80,82,84,86,88,90,92,94,96,98",
+                                "",
+                                ""
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
